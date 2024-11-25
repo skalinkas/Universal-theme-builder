@@ -1,7 +1,7 @@
 import os
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.frontend import async_register_built_in_panel
+from homeassistant.components.frontend import async_register_built_in_panel, async_remove_panel
 from homeassistant.helpers.service import async_register_admin_service
 
 import yaml
@@ -23,15 +23,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         cache_headers=False,
     )
 
-    # Add sidebar panel
-    async_register_built_in_panel(
-        hass,
-        component_name="iframe",
-        sidebar_title="Style Builder",
-        sidebar_icon="mdi:palette",
-        frontend_url_path="style-builder",
-        config={"url": "/style-builder-frontend/index.html"},
-    )
+    # Check if the panel is already registered
+    if "style-builder" not in hass.data.get("frontend_panels", {}):
+        async_register_built_in_panel(
+            hass,
+            component_name="iframe",
+            sidebar_title="Style Builder",
+            sidebar_icon="mdi:palette",
+            frontend_url_path="style-builder",
+            config={"url": "/style-builder-frontend/index.html"},
+        )
 
     # Add services for reading and saving themes
     def read_theme(theme_name: str):
@@ -66,6 +67,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    # Unregister the panel
+    await async_remove_panel(hass, "style-builder")
+
     if DOMAIN in hass.data:
         del hass.data[DOMAIN]
+
     return True
