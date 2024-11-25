@@ -22,4 +22,4 @@ A dynamic theme editor for Home Assistant that allows you to create, edit, and d
 
 ## Support My Work
 
-If you enjoy using Style Builder and want to support its development
+If you enjoy using Style Builder and want to support its development <a href="https://www.buymeacoffee.com/TimothyDemaegdt" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
