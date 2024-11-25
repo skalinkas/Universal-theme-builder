@@ -1,27 +1,32 @@
 import os
+import yaml
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.frontend import async_register_built_in_panel, async_remove_panel
 from homeassistant.helpers.service import async_register_admin_service
+from homeassistant.components.http.static import StaticPathConfig
 
-import yaml
 from .const import DOMAIN
+
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Style Builder integration."""
     hass.data.setdefault(DOMAIN, {})
     return True
 
+
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up Style Builder from a config entry."""
     hass.data[DOMAIN] = config_entry.data
 
-    # Serve frontend files
-    hass.http.register_static_path(
-        "/style-builder-frontend",
-        hass.config.path("custom_components/style_builder/frontend"),
-        cache_headers=False,
-    )
+    # Serve frontend files using the updated static path registration
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(
+            url_path="/style-builder-frontend",
+            local_path=hass.config.path("custom_components/style_builder/frontend"),
+            cache=False
+        )
+    ])
 
     # Check if the panel is already registered
     if "style-builder" not in hass.data.get("frontend_panels", {}):
@@ -64,6 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     )
 
     return True
+
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Unload a config entry."""
