@@ -1,9 +1,10 @@
 import os
-import yaml
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.components.frontend import async_register_built_in_panel
 from homeassistant.helpers.service import async_register_admin_service
 
+import yaml
 from .const import DOMAIN
 
 async def async_setup(hass: HomeAssistant, config: dict):
@@ -15,28 +16,35 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     """Set up Style Builder from a config entry."""
     hass.data[DOMAIN] = config_entry.data
 
+    # Serve frontend files
+    hass.http.register_static_path(
+        "/style-builder-frontend",
+        hass.config.path("custom_components/style_builder/frontend"),
+        cache_headers=False,
+    )
+
+    # Add sidebar panel
+    async_register_built_in_panel(
+        hass,
+        component_name="iframe",
+        sidebar_title="Style Builder",
+        sidebar_icon="mdi:palette",
+        frontend_url_path="style-builder",
+        config={"url": "/style-builder-frontend/index.html"},
+    )
+
+    # Add services for reading and saving themes
     def read_theme(theme_name: str):
-        """Read a theme file from the themes directory."""
         theme_path = hass.config.path(f"{config_entry.data['theme_directory']}/{theme_name}.yaml")
         if os.path.exists(theme_path):
-            try:
-                with open(theme_path, "r", encoding="utf-8") as file:
-                    return yaml.safe_load(file)
-            except yaml.YAMLError as error:
-                hass.logger.error("Error reading theme file '%s': %s", theme_name, error)
-                return None
-        hass.logger.warning("Theme file '%s' does not exist", theme_name)
+            with open(theme_path, "r", encoding="utf-8") as file:
+                return yaml.safe_load(file)
         return None
 
     def save_theme(theme_name: str, theme_data: dict):
-        """Save a theme file to the themes directory."""
         theme_path = hass.config.path(f"{config_entry.data['theme_directory']}/{theme_name}.yaml")
-        try:
-            with open(theme_path, "w", encoding="utf-8") as file:
-                yaml.dump(theme_data, file, default_flow_style=False, allow_unicode=True)
-            hass.logger.info("Theme '%s' saved successfully", theme_name)
-        except (OSError, yaml.YAMLError) as error:
-            hass.logger.error("Error saving theme '%s': %s", theme_name, error)
+        with open(theme_path, "w", encoding="utf-8") as file:
+            yaml.dump(theme_data, file, default_flow_style=False, allow_unicode=True)
 
     async_register_admin_service(
         hass,
@@ -54,7 +62,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         schema=None,
     )
 
-    hass.logger.info("Style Builder integration has been set up.")
     return True
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
