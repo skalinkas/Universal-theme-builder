@@ -1,0 +1,16 @@
+read_theme:
+  description: "Read an existing theme and return its content."
+  fields:
+    theme_name:
+      description: "The name of the theme to read."
+      example: "example_theme"
+
+save_theme:
+  description: "Save a theme to the themes directory."
+  fields:
+    theme_name:
+      description: "The name of the theme to save."
+      example: "custom_theme"
+    theme_data:
+      description: "The theme configuration as a dictionary."
+      example: {"primary-color": "#000000", "accent-color": "#FFFFFF"}

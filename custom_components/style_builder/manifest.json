@@ -1,0 +1,9 @@
+{
+  "domain": "style_builder",
+  "name": "Style Builder",
+  "version": "1.0.0",
+  "documentation": "https://github.com/skalinkas/Universal-theme-builder",
+  "requirements": ["pyyaml"],
+  "dependencies": [],
+  "codeowners": ["@skalinkas"]
+}
