@@ -2,8 +2,10 @@
   "domain": "style_builder",
   "name": "Style Builder",
   "version": "1.0.0",
-  "documentation": "https://github.com/skalinkas/Universal-theme-builder",
-  "requirements": ["pyyaml"],
+   "documentation": "https://github.com/skalinkas/Universal-theme-builder",
+  "requirements": [],
   "dependencies": [],
-  "codeowners": ["@skalinkas"]
+  "codeowners": ["@skalinkas"],
+  "iot_class": "local_push",
+  "config_flow": true
 }
