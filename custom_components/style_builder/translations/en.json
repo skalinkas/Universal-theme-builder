@@ -1,0 +1,9 @@
+{
+    "title": "Style Builder",
+    "ui": {
+        "panel": {
+            "sidebar_title": "Style Builder",
+            "sidebar_icon": "mdi:palette"
+        }
+    }
+}

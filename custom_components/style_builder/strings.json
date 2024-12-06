@@ -1,0 +1,11 @@
+{
+    "title": "Style Builder",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Setup Style Builder",
+                "description": "Configure your Style Builder integration."
+            }
+        }
+    }
+}
