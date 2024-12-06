@@ -2,6 +2,6 @@
   "name": "Style Builder",
   "content_in_root": false,
   "domains": ["style_builder"],
-  "iot_class": "local_polling",
-  "render_readme": true
+  "country": "global",
+  "iot_class": "Local Push"
 }
